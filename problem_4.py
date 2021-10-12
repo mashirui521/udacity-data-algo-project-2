@@ -58,15 +58,23 @@ def test():
     group_internal.add_group(group_manager)
     group_internal.add_group(group_worker)
 
-    test_data = [('Visitor1', group_external, True),   \
-                 ('Tom',      group_company,  True),   \
-                 ('Stefan',   group_manager,  True),   \
-                 ('Peter',    group_worker,   False)]
+    # Test case 1: user is directly in the group -> Return True
+    # Test case 2: user is in the subgroup       -> Return True
+    # Test case 3: user is not in the group      -> Return False
+    # Test case 4: invalid user name             -> Return False
+    # Test case 5: invalid group                 -> Return False
 
-    for user, group, target_result in test_data:
+    # tuple: (user, group, expected return)
+    test_data = [('Visitor1', group_external, True),    \
+                 ('Tom',      group_company,  True),    \
+                 ('Peter',    group_worker,   False),   \
+                 (123,        group_manager,  False),   \
+                 ('Peter',    None,           False)]
+
+    for i, (user, group, target_result) in enumerate(test_data, 1):
         if is_user_in_group(user, group) == target_result:
-            print('Pass')
+            print('Test case {}: Pass'.format(i))
         else:
-            print('Failed')
+            print('Test case {}: Failed'.format(i))
 
 test()

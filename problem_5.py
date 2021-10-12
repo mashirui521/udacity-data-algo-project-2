@@ -53,14 +53,38 @@ class BlockChain:
         return output_string
 
 ###################################  TEST  ###############################################
+def test_invalid_int_input():
+    print('\n--------------------   TEST_INVALID_INT_INPUT   ------------------')
+
+    block_chain = BlockChain()
+    block_chain.append(1)                 # invalid input, pop up a error message
+
+    print('--------------------   END: TEST_INVALID_INT_INPUT   ------------------\n')
+
+def test_none_input():
+    print('\n--------------------   TEST_INVALID_NONE_INPUT   ------------------')
+
+    block_chain = BlockChain()
+    block_chain.append(None)              # invalid input, pop up a error message
+
+    print('--------------------   END: TEST_INVALID_NONE_INPUT   ------------------\n')
+
 def test():
+    print('\n--------------------   TEST   ------------------')
+
     block_chain = BlockChain()
     block_chain.append('1')
     block_chain.append('2')
-    block_chain.append(1)                 # invalid input, pop up a error message
-    block_chain.append(None)              # invalid input, pop up a error message
     block_chain.append('3')
 
     print('\nBlock Chain:\n')
-    print(block_chain)
-test()
+    print(block_chain)                    # output block chain with block data = 1, 2, 3, in order
+
+    print('--------------------   END: TEST   ------------------\n')
+
+def TEST_SUITE():
+    test()
+    test_invalid_int_input()
+    test_none_input()
+
+TEST_SUITE()

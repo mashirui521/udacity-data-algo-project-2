@@ -146,6 +146,122 @@ def huffman_decoding(data, tree):
 
     return output_string
 
+
+########################################   TEST   #################################################
+def test_empty_queue():
+    print('\n--------------------   TEST_EMPTY_QUEUE   ------------------')
+
+    queue = PriorityQueue()
+    print(queue.deque())                             # return None, since no item exists in queue
+
+    print('--------------------   END: TEST_EMPTY_QUEUE   ------------------\n')
+
+def test_queue():
+    print('\n--------------------   TEST_QUEUE   ------------------')
+
+    queue = PriorityQueue()
+    queue.enque(Node(character='A', frequency=5))
+    queue.enque(Node(frequency=2))
+    queue.enque(Node(frequency=9))
+    queue.enque(Node(character='B', frequency=5))
+    print(queue)                                     # print items with frequency [2, 5, 5, 9]
+                                                     # nodes in queue is ordered by frequency. 
+                                                     # low frequency has high priority
+    queue.deque()
+    print(queue)                                     # print items with frequency [5, 5, 9]
+                                                     # the item with highest priority (lowest frequency) is removed by deque()
+
+    print('--------------------   END: TEST_QUEUE   ------------------\n')
+
+def test_get_priority_queue_empty():
+    print('\n--------------------   TEST_GET_PRIORITY_QUEUE_EMPTY   ------------------')
+
+    print(get_priority_queue(''))                    # empty queue caused by empty string
+    
+    print('--------------------   END: TEST_GET_PRIORITY_QUEUE_EMPTY   ------------------\n')
+
+def test_get_priority_queue():
+    print('\n--------------------   TEST_GET_PRIORITY_QUEUE   ------------------')
+
+    a_great_sentence = 'The bird is the word'
+    
+    # print priority queue with character frequencies
+    # character: T frequency: 1
+    # character: b frequency: 1
+    # character: s frequency: 1
+    # character: t frequency: 1
+    # character: w frequency: 1
+    # character: o frequency: 1
+    # character: h frequency: 2
+    # character: e frequency: 2
+    # character: i frequency: 2
+    # character: r frequency: 2
+    # character: d frequency: 2
+    # character:   frequency: 4
+    print(get_priority_queue(a_great_sentence))
+
+    print('--------------------   END: TEST_GET_PRIORITY_QUEUE   ------------------\n')
+
+def test_tree():
+    print('\n--------------------   TEST_TREE  ------------------')
+
+    a_great_sentence = 'AAAAAAABBBCCCCCCCDDEEEEEE'
+    queue = get_priority_queue(a_great_sentence)
+    print(queue)
+    tree = HuffmanTree()
+    tree.build(queue)
+
+    # The characters with expected huffman code:
+    # C -> 11
+    # D -> 000
+    # B -> 001
+    # E -> 01
+    # A -> 10
+    for char in set(a_great_sentence):
+        print('Traversal tree for {}:'.format(char))                         # Show the traversal through the tree -> Depth First Search
+        huffman_code, found_path = find_char_in_tree(tree, char)
+        print('\nPath Found for {}:'.format(char))
+        print(*found_path, sep=' -> ')
+
+        print('\nHuffman Code for character {}: {}\n'.format(char, huffman_code))
+    
+    print('--------------------   END: TEST_TREE   ------------------\n')
+
+def test_huffman_encoding():
+    print('\n--------------------   TEST_HUFFMAN_ENCODING  ------------------')
+    huffman_code, _ = huffman_encoding('AAAAAAABBBCCCCCCCDDEEEEEE')
+
+    # The result of encoding must be same as the given code from example
+    if huffman_code == '1010101010101000100100111111111111111000000010101010101':
+        print('Pass')
+    else:
+        print('Failed')
+    print('--------------------   END: TEST_HUFFMAN_ENCODING   ------------------\n')
+
+def test_huffman_decoding():
+    print('\n--------------------   TEST_HUFFMAN_DECODING  ------------------')
+    data = 'AAAAAAABBBCCCCCCCDDEEEEEE'
+    huffman_code, tree = huffman_encoding(data)
+    decoded_string = huffman_decoding(huffman_code, tree)
+
+    # The decoded string must be same as the given input data
+    if decoded_string == data:
+        print('Pass')
+    else:
+        print('Failed. Output: {}, Expected: {}'.format(decoded_string, data))
+    print('--------------------   END: TEST_HUFFMAN_DECODING   ------------------\n')
+
+def TEST_SUITE():
+    test_queue()
+    test_empty_queue()
+    test_get_priority_queue()
+    test_get_priority_queue_empty()
+    test_tree()
+    test_huffman_encoding()
+    test_huffman_decoding()
+
+####################################################################################################
+
 if __name__ == "__main__":
     codes = {}
 
@@ -164,83 +280,4 @@ if __name__ == "__main__":
     print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
     print ("The content of the encoded data is: {}\n".format(decoded_data))
 
-###################################################################################################
-########################################   TEST   #################################################
-###################################################################################################
-
-def test_queue():
-    print('\n--------------------   TEST_QUEUE   ------------------')
-
-    queue = PriorityQueue()
-    print(queue.deque())                             # return None, since no item exists in queue
-
-    queue.enque(Node(character='A', frequency=5))
-    queue.enque(Node(frequency=2))
-    queue.enque(Node(frequency=9))
-    queue.enque(Node(character='B', frequency=5))
-    print(queue)                                     # print items with frequency [2, 5, 5, 9]
-                                                     # nodes in queue is ordered by frequency. 
-                                                     # low frequency has high priority
-    queue.deque()
-    print(queue)                                     # print items with frequency [5, 5, 9]
-                                                     # the item with highest priority (lowest frequency) is removed by deque()
-
-    print('--------------------   END: TEST_QUEUE   ------------------\n')
-
-
-def test_get_priority_queue():
-    print('\n--------------------   TEST_GET_PRIORITY_QUEUE   ------------------')
-
-    a_great_sentence = 'The bird is the word'
-    print(get_priority_queue(a_great_sentence))      # print priority queue with character frequencies
-    print(get_priority_queue(''))                    # empty queue caused by empty string
-
-    print('--------------------   END: TEST_GET_PRIORITY_QUEUE   ------------------\n')
-
-def test_tree():
-    print('\n--------------------   TEST_TREE  ------------------')
-
-    a_great_sentence = 'AAAAAAABBBCCCCCCCDDEEEEEE'
-    queue = get_priority_queue(a_great_sentence)
-    print(queue)
-    tree = HuffmanTree()
-    tree.build(queue)
-
-    for char in set(a_great_sentence):
-        print('Traversal tree for {}:'.format(char))                         # Show the traversal through the tree -> Depth First Search
-        huffman_code, found_path = find_char_in_tree(tree, char)
-        print('\nPath Found for {}:'.format(char))
-        print(*found_path, sep=' -> ')
-
-        print('\nHuffman Code for character {}: {}\n'.format(char, huffman_code))
-    
-    print('--------------------   END: TEST_TREE   ------------------\n')
-
-def test_huffman_encoding():
-    print('\n--------------------   TEST_HUFFMAN_ENCODING  ------------------')
-    huffman_code, _ = huffman_encoding('AAAAAAABBBCCCCCCCDDEEEEEE')
-    if huffman_code == '1010101010101000100100111111111111111000000010101010101':
-        print('Pass')
-    else:
-        print('Failed')
-    print('--------------------   END: TEST_HUFFMAN_ENCODING   ------------------\n')
-
-def test_huffman_decoding():
-    print('\n--------------------   TEST_HUFFMAN_DECODING  ------------------')
-    data = 'AAAAAAABBBCCCCCCCDDEEEEEE'
-    huffman_code, tree = huffman_encoding(data)
-    decoded_string = huffman_decoding(huffman_code, tree)
-    if decoded_string == data:
-        print('Pass')
-    else:
-        print('Failed. Output: {}, Expected: {}'.format(decoded_string, data))
-    print('--------------------   END: TEST_HUFFMAN_DECODING   ------------------\n')
-
-def TEST_SUITE():
-    test_queue()
-    test_get_priority_queue()
-    test_tree()
-    test_huffman_encoding()
-    test_huffman_decoding()
-
-####################################################################################################
+    TEST_SUITE()

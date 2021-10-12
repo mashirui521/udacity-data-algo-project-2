@@ -20,17 +20,36 @@ def find_files(suffix, path):
         return files
 
 ###################################  TEST  ###############################################
+def test_no_c_file():
+    print('\n--------------------   TEST_NO_C_FILE   ------------------')
 
-def test():
+    print('{} C-Files are found'.format(len(find_files('.c', './testdata/testdir_no_c'))))       # output: 0 C-Files are found
+
+    print('--------------------   END: TEST_NO_C_FILE   ------------------\n')
+
+def test_invalid_path():
+    print('\n--------------------   TEST_INVALID_PATH   ------------------')
+
     print(find_files('.c', './test'))                         # return None with a warning: given path not exist
 
-    c_files = sorted(find_files('.c', './testdir'))           # return ['./testdir/subdir5/a.c', 
-                                                              #         './testdir/subdir3/subsubdir1/b.c', 
-                                                              #         './testdir/subdir1/a.c', 
-                                                              #         './testdir/t1.c'] 
-                                                              # sorted for printing
-    
-    print('{} C-Files are found:'.format(len(c_files)))
-    print(*c_files, sep='\n')                                 
+    print('--------------------   END: TEST_INVALID_PATH   ------------------\n')
 
-test()
+def test():
+    print('\n--------------------   TEST   ------------------')
+
+    c_files = sorted(find_files('.c', './testdata/testdir'))  # sorted for printing
+
+    print('{} C-Files are found:'.format(len(c_files)))       # output: 4 C-Files are found
+    print(*c_files, sep='\n')                                 #        './testdir/subdir5/a.c', 
+                                                              #        './testdir/subdir3/subsubdir1/b.c', 
+                                                              #        './testdir/subdir1/a.c', 
+                                                              #        './testdir/t1.c'
+
+    print('--------------------   END: TEST   ------------------\n')
+
+def TEST_SUITE():
+    test()
+    test_invalid_path()
+    test_no_c_file()
+
+TEST_SUITE()
