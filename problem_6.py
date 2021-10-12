@@ -1,5 +1,3 @@
-import hashlib
-
 class Node:
     def __init__(self, value):
         self.value = value
@@ -28,15 +26,13 @@ class LinkedList:
                 node.next = Node(value)
                 break
 
-    def find(self, value):
-        if value is None:
-            return False
+    def to_list(self):
+        out = list()
         node = self.head
         while node:
-            if node.is_equal(value):
-                return True
+            out.append(node.value)
             node = node.next
-        return False
+        return out
 
     def __repr__(self):
         output_string = ''
@@ -49,21 +45,19 @@ class LinkedList:
                 node = node.next
         return output_string
 
+def build_llist_from_list(data_list):
+    llist = LinkedList()
+    for item in data_list:
+        llist.append(item)
+    return llist
+
 def union(llist_1, llist_2):
-    node = llist_2.head
-    while node is not None:
-        llist_1.append(node.value)
-        node = node.next
-    return llist_1
+    union_list = list(set(llist_1.to_list() + llist_2.to_list()))
+    return build_llist_from_list(union_list)
 
 def intersection(llist_1, llist_2):
-    llist_intersection = LinkedList()
-    node = llist_1.head
-    while node:
-        if llist_2.find(node.value):
-            llist_intersection.append(node.value)
-        node = node.next
-    return llist_intersection
+    intersection_list = list(set(llist_1.to_list()) & set(llist_2.to_list()))
+    return build_llist_from_list(intersection_list)
 
 ###################################  TEST  ###############################################
 def test_no_intersection():
@@ -85,7 +79,7 @@ def test_no_intersection():
     llist_intersection = intersection(llist_1, llist_2)
     print('LinkedList Intersection: {}'.format(llist_intersection))   # output: empty
 
-    print('\n--------------------   TEST_NO_INTERSECTION   ------------------')
+    print('--------------------   END: TEST_NO_INTERSECTION   ------------------\n')
 
 def test_intersection():
     print('\n--------------------   TEST_INTERSECTION   ------------------')
@@ -104,9 +98,9 @@ def test_intersection():
     print('LinkedList 2: {}'.format(llist_2))                         # output: 1 7 8 9 11 21
 
     llist_intersection = intersection(llist_1, llist_2)
-    print('LinkedList Intersection: {}'.format(llist_intersection))   # output: empty
+    print('LinkedList Intersection: {}'.format(llist_intersection))   # output: 4 6
 
-    print('\n--------------------   TEST_INTERSECTION   ------------------')
+    print('--------------------   END: TEST_INTERSECTION   ------------------\n')
 
 def test_union():
     print('\n--------------------   TEST_UNION   ------------------')
@@ -125,27 +119,23 @@ def test_union():
     print('LinkedList 2: {}'.format(llist_2))           # output: 6 32 4 9 1 11 21
 
     llist_union = union(llist_1, llist_2)
-    print('LinkedList Union: {}'.format(llist_union))   # output: 3 2 4 35 6 65 32 9 1 11 21
+    print('LinkedList Union: {}'.format(llist_union))   # output: 32, 65, 2, 35, 3, 4, 6, 1, 9, 11, 21
 
     print('--------------------   END: TEST_UNION   ------------------\n')
 
-def test_find_value():
-    print('\n--------------------   TEST_FIND_VALUE   ------------------')
-    data = [3,2,4,35,6,65,6,4,3,21]
-    llist = LinkedList()
-    for item in data:
-        llist.append(item)
+def test_union_empty_inputs():
+    print('\n--------------------   TEST_UNION_EMPTY_INPUTS   ------------------')
+    
+    llist_1 = LinkedList()
+    llist_2 = LinkedList()
 
-    if llist.find(65):
-        print('Pass')
-    else: 
-        print('Failed')
+    print('LinkedList 1: {}'.format(llist_1))           # output: empty
+    print('LinkedList 2: {}'.format(llist_2))           # output: empty
 
-    if not llist.find(None):
-        print('Pass')
-    else: 
-        print('Failed')
-    print('--------------------   END: TEST_FIND_VALUE   ------------------\n')
+    llist_union = union(llist_1, llist_2)
+    print('LinkedList Union: {}'.format(llist_union))   # output: empty
+    
+    print('--------------------   END: TEST_UNION_EMPTY_INPUTS   ------------------\n')
 
 def test_llist():
     print('\n--------------------   TEST_LLIST   ------------------')
@@ -171,8 +161,9 @@ def test_empty_list():
 def TEST_SUITE():
     test_llist()
     test_empty_list()
-    test_find_value()
     test_union()
+    test_union_empty_inputs()
     test_intersection()
+    test_no_intersection()
 
 TEST_SUITE()
