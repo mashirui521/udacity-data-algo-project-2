@@ -86,7 +86,7 @@ def test():
 
 def TEST_SUITE():
     test()
-    #test_zero_cache()
-    #test_none_key()
+    test_zero_cache()
+    test_none_key()
 
 TEST_SUITE()
