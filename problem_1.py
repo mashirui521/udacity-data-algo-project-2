@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 class LRU_Cache:
     def __init__(self, capacity=5):
-        self.capacity = capacity
+        self.capacity = max(capacity, 0)
         self.cache = OrderedDict()
 
     def get(self, key):
@@ -60,6 +60,17 @@ def test_zero_cache():
     print('Get 1 from cache, return: {}, expected: {}'.format(cache.get(1), -1))     # return -1. No element is in Cache
 
     print('--------------------   END: TEST_ZERO_CACHE   ------------------\n')
+
+def test_negative_cache_capa():
+    print('\n--------------------   TEST_NEGATIVE_CACHE_CAPA   ------------------')
+
+    cache = LRU_Cache(-1)
+    cache.set(1, 1)           # Print 'Warning. Cannot set any value. Capacity is ZERO.'
+    print(cache)              # Print empty cache
+
+    print('Get 1 from cache, return: {}, expected: {}'.format(cache.get(1), -1))     # return -1. No element is in Cache
+
+    print('--------------------   END: TEST_NEGATIVE_CACHE_CAPA   ------------------\n')
         
 def test():
     print('\n--------------------   TEST   ------------------')
@@ -87,6 +98,7 @@ def test():
 def TEST_SUITE():
     test()
     test_zero_cache()
+    test_negative_cache_capa()
     test_none_key()
 
 TEST_SUITE()

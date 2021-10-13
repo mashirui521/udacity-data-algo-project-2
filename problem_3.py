@@ -25,6 +25,9 @@ class Node:
     def is_equal_to(self, character):
         return self.character == character
 
+    def is_leaf(self):
+        return not self.has_left_child() and not self.has_right_child()
+
     def has_character(self):
         return self.character is not None
 
@@ -114,12 +117,19 @@ def find_char_in_tree(tree, char):
     stack = list()
     traversal_tree(tree.root, stack, char)
     huffman_code = ''
+
+    if len(stack) == 1:
+        return '0', stack
+
     for item in stack:
         if item.code is not None:
             huffman_code += item.code
     return huffman_code, stack
 
 def huffman_encoding(data):
+    if data is None or len(data) == 0 or type(data) is not str:
+        print('!!! Invalid input data. It should be non-empty string!!!')
+        return '', None
     queue = get_priority_queue(data)
     tree = HuffmanTree()
     tree.build(queue)
@@ -132,11 +142,21 @@ def huffman_encoding(data):
     return huffman_code, tree
 
 def huffman_decoding(data, tree):
+    if (data is None) or (tree is None) or (len(data) == 0) or (type(data) is not str):
+        print('!!! Invalid input data. It should be non-empty string!!!')
+        return ''
+    else:
+        for char in data:
+            if char not in ['0', '1']:
+                print('!!! Invalid character {} in input data.!!!'.format(char))
+                return ''
+
     node = tree.root
     output_string = ''
     for bit in data:
         if bit == '0':
-            node = node.left_child
+            if node.has_left_child():
+                node = node.left_child
         elif bit == '1':
             node = node.right_child
 
@@ -240,16 +260,71 @@ def test_huffman_encoding():
 
 def test_huffman_decoding():
     print('\n--------------------   TEST_HUFFMAN_DECODING  ------------------')
-    data = 'AAAAAAABBBCCCCCCCDDEEEEEE'
+    
+    data = 'The bird is the word'
+
+    print ("The size of the data is: {}\n".format(sys.getsizeof(data)))
+    print ("The content of the data is: {}\n".format(data))
+    
     huffman_code, tree = huffman_encoding(data)
+    
+    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(huffman_code, base=2))))
+    print ("The content of the encoded data is: {}\n".format(huffman_code))
+
     decoded_string = huffman_decoding(huffman_code, tree)
+
+    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_string)))
+    print ("The content of the encoded data is: {}\n".format(decoded_string))
 
     # The decoded string must be same as the given input data
     if decoded_string == data:
         print('Pass')
     else:
         print('Failed. Output: {}, Expected: {}'.format(decoded_string, data))
+    
     print('--------------------   END: TEST_HUFFMAN_DECODING   ------------------\n')
+
+def test_huffman_decoding_repetitive_data():
+    print('\n--------------------   TEST_HUFFMAN_DECODING_REPETITIVE_DATA  ------------------')
+    
+    data = 'AAAAAAA'
+
+    print ("The size of the data is: {}\n".format(sys.getsizeof(data)))
+    print ("The content of the data is: {}\n".format(data))
+
+    huffman_code, tree = huffman_encoding(data)
+    
+    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(huffman_code, base=2))))
+    print ("The content of the encoded data is: {}\n".format(huffman_code))
+    
+    decoded_string = huffman_decoding(huffman_code, tree)
+
+    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_string)))
+    print ("The content of the encoded data is: {}\n".format(decoded_string))
+
+    # The decoded string must be same as the given input data
+    if decoded_string == data:
+        print('Pass')
+    else:
+        print('Failed. Output: {}, Expected: {}'.format(decoded_string, data))
+    
+    print('--------------------   END: TEST_HUFFMAN_DECODING_REPETITIVE_DATA   ------------------\n')
+
+def test_huffman_decoding_empty_data():
+    print('\n--------------------   TEST_HUFFMAN_DECODING_EMPTY_DATA  ------------------')
+    
+    data = ''
+
+    huffman_code, tree = huffman_encoding(data)            # output error message: !!! Invalid input data. It should be non-empty string!!!
+    decoded_string = huffman_decoding(huffman_code, tree)  # output error message: !!! Invalid input data. It should be non-empty string!!!
+
+    # The decoded string must be same as the given input data
+    if decoded_string == data:
+        print('Pass')
+    else:
+        print('Failed. Output: {}, Expected: {}'.format(decoded_string, data))
+    
+    print('--------------------   END: TEST_HUFFMAN_DECODING_EMPTY_DATA   ------------------\n')
 
 def TEST_SUITE():
     test_queue()
@@ -259,25 +334,7 @@ def TEST_SUITE():
     test_tree()
     test_huffman_encoding()
     test_huffman_decoding()
+    test_huffman_decoding_repetitive_data()
+    test_huffman_decoding_empty_data()
 
-####################################################################################################
-
-if __name__ == "__main__":
-    codes = {}
-
-    a_great_sentence = "The bird is the word"
-
-    print ("The size of the data is: {}\n".format(sys.getsizeof(a_great_sentence)))
-    print ("The content of the data is: {}\n".format(a_great_sentence))
-
-    encoded_data, tree = huffman_encoding(a_great_sentence)
-
-    print ("The size of the encoded data is: {}\n".format(sys.getsizeof(int(encoded_data, base=2))))
-    print ("The content of the encoded data is: {}\n".format(encoded_data))
-
-    decoded_data = huffman_decoding(encoded_data, tree)
-
-    print ("The size of the decoded data is: {}\n".format(sys.getsizeof(decoded_data)))
-    print ("The content of the encoded data is: {}\n".format(decoded_data))
-
-    TEST_SUITE()
+TEST_SUITE()
